@@ -1,3 +1,4 @@
+# vim: set et ts=4 sw=4 tw=80 :
 """
 Module that contains the command line app.
 
@@ -16,12 +17,19 @@ Why does this file exist, and why not put this in __main__?
 """
 import argparse
 
+from robin_srv import SRV
 
 parser = argparse.ArgumentParser(description='Command description.')
-parser.add_argument('names', metavar='NAME', nargs=argparse.ZERO_OR_MORE,
-                    help="A name of something.")
+parser.add_argument('-s', '--service', metavar='SERVICE', required=True,
+                    help="The service to lookup")
+parser.add_argument('-d', '--domain', metavar='DOMAIN', required=True,
+                    help="The domain the service is associated with")
+parser.add_argument('-p', '--protocol', metavar='PROTOCOL', default="tcp",
+                    help="The protocol the service is running on: [tcp|udp]")
 
 
 def main(args=None):
     args = parser.parse_args(args=args)
-    print(args.names)
+    srvs = SRV(args.service, args.domain, args.protocol)
+    for s in srvs:
+      print(s)
